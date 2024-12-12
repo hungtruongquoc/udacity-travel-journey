@@ -1,5 +1,17 @@
+import Foundation
+
+extension Bundle {
+    var apiBaseURL: String {
+        guard let baseURL = object(forInfoDictionaryKey: "API_BASE_URL") as? String else {
+            fatalError("API_BASE_URL not found in Info.plist")
+        }
+        return baseURL
+    }
+}
+
+
 enum APIEndpoints {
-    private static let baseURL = "https://your-api-base-url.com"  // Replace with your actual base URL
+    private static let baseURL = Bundle.main.apiBaseURL
     
     // MARK: - Authentication
     struct Auth {
