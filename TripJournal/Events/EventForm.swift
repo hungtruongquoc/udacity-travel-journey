@@ -2,6 +2,9 @@ import MapKit
 import SwiftUI
 
 struct EventForm: View {
+    private let tripStartDate: Date
+    private let tripEndDate: Date
+    
     enum Mode: Hashable, Identifiable {
         case add
         case edit(Event)
@@ -25,15 +28,29 @@ struct EventForm: View {
     init(
         tripId: Trip.ID,
         mode: Mode,
+        tripStartDate: Date,
+        tripEndDate: Date,
         updateHandler: @escaping () -> Void
     ) {
         self.tripId = tripId
         self.mode = mode
+        self.tripStartDate = tripStartDate
+        self.tripEndDate = tripEndDate
         self.updateHandler = updateHandler
 
         switch mode {
         case .add:
             title = "Add Event"
+            
+            // Constrain initial date to trip range
+            let now = Date.now
+            if now < tripStartDate {
+                _date = .init(initialValue: tripStartDate)
+            } else if now > tripEndDate {
+                _date = .init(initialValue: tripEndDate)
+            } else {
+                _date = .init(initialValue: now)
+            }
 
         case let .edit(event):
             title = "Edit \(event.name)"
@@ -100,7 +117,7 @@ struct EventForm: View {
                 .lineLimit(3 ... 5)
             }
             Section {
-                DatePicker("Date", selection: $date, displayedComponents: .date)
+                DatePicker("Date", selection: $date, in: tripStartDate...tripEndDate, displayedComponents: .date)
             }
             Section("Travel Method") {
                 TextField("Travel Method", text: $transitionFromPrevious ?? "", prompt: Text("Tram ride from hotel"))
