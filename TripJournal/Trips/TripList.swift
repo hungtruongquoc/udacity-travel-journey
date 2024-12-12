@@ -138,7 +138,7 @@ struct TripList: View {
         }
         error = nil
         do {
-            trips = try await journalService.getTrips()
+            trips = try await journalServiceLive.getTrips()
         } catch {
             self.error = error
         }
