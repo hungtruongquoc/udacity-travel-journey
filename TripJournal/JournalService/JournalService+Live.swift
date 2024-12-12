@@ -263,8 +263,20 @@ class JournalServiceLive: JournalService {
         fatalError("Unimplemented updateEvent")
     }
 
-    func deleteEvent(withId _: Event.ID) async throws {
-        fatalError("Unimplemented deleteEvent")
+    func deleteEvent(withId eventId: Event.ID) async throws {
+        guard let url = URL(string: APIEndpoints.Events.delete(id: "\(eventId)")) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = try setupRequest(
+            for: url,
+            method: "DELETE",
+            requiresAuth: true
+        )
+        
+        // For DELETE requests that return no content, decode as EmptyResponse
+        let _: EmptyResponse = try await performNetworkRequest(request: request)
+        print("Event deletion completed successfully")
     }
 
     func createMedia(with _: MediaCreate) async throws -> Media {
