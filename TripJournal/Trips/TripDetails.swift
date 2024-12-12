@@ -24,6 +24,7 @@ struct TripDetails: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.journalService) private var journalService
+    @Environment(\.journalServiceLive) private var journalServiceLive
 
     var body: some View {
         contentView
@@ -146,7 +147,7 @@ struct TripDetails: View {
     private func deleteTrip() async {
         isLoading = true
         do {
-            try await journalService.deleteTrip(withId: trip.id)
+            try await journalServiceLive.deleteTrip(withId: trip.id)
             await MainActor.run {
                 deletionHandler()
                 dismiss()

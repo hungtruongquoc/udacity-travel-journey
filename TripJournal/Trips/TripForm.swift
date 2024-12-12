@@ -177,7 +177,7 @@ struct TripForm: View {
     private func deleteTrip(withId id: Trip.ID) async {
         isLoading = true
         do {
-            try await journalService.deleteTrip(withId: id)
+            try await journalServiceLive.deleteTrip(withId: id)
             await MainActor.run {
                 updateHandler()
                 dismiss()

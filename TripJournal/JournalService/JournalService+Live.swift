@@ -188,8 +188,20 @@ class JournalServiceLive: JournalService {
         fatalError("Unimplemented updateTrip")
     }
 
-    func deleteTrip(withId _: Trip.ID) async throws {
-        fatalError("Unimplemented deleteTrip")
+    func deleteTrip(withId tripId: Trip.ID) async throws {
+        guard let url = URL(string: APIEndpoints.Trips.delete(id: "\(tripId)")) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = try setupRequest(
+            for: url,
+            method: "DELETE",
+            requiresAuth: true
+        )
+        
+        // For DELETE requests that return no content, decode as EmptyResponse
+        struct EmptyResponse: Decodable {}
+        let _: EmptyResponse = try await performNetworkRequest(request: request)
     }
 
     func createEvent(with _: EventCreate) async throws -> Event {
