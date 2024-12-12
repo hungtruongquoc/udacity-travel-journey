@@ -151,10 +151,13 @@ struct TripDetails: View {
             await MainActor.run {
                 deletionHandler()
                 dismiss()
+                isLoading = false
             }
         } catch {
-            self.error = error
+            await MainActor.run {
+                self.error = error
+                isLoading = false
+            }
         }
-        isLoading = false
     }
 }

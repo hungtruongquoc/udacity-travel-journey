@@ -7,6 +7,8 @@
 import Combine
 import Foundation
 
+struct EmptyResponse: Decodable {}
+
 class JournalServiceLive: JournalService {
     private func storeToken(_ token: Token) throws {
         try KeychainService.shared.saveToken(token)
@@ -42,58 +44,68 @@ class JournalServiceLive: JournalService {
     }
     
     private func performNetworkRequest<T: Decodable>(request: URLRequest) async throws -> T {
-       do {
-           let (data, response) = try await URLSession.shared.data(for: request)
-           
-           guard let httpResponse = response as? HTTPURLResponse else {
-               FeedbackService.shared.provideFeedback(.error)
-               throw NetworkError.invalidResponse
-           }
-           
-           switch httpResponse.statusCode {
-           case 200...299:
-               do {
-                   let result = try JSONDecoder().decode(T.self, from: data)
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                FeedbackService.shared.provideFeedback(.error)
+                throw NetworkError.invalidResponse
+            }
+            
+            switch httpResponse.statusCode {
+            case 204:
+                // If it's a DELETE request with 204, we consider it successful
+               if request.httpMethod == "DELETE" {
                    FeedbackService.shared.provideFeedback(.success)
-                   return result
-               } catch {
-                   print("Decoding error: \(error)")
-                   print("Debug description: \(error.localizedDescription)")
-                   
-                   if let decodingError = error as? DecodingError {
-                       switch decodingError {
-                       case .keyNotFound(let key, let context):
-                           print("Key '\(key.stringValue)' not found: \(context.debugDescription)")
-                       case .typeMismatch(let type, let context):
-                           print("Type '\(type)' mismatch: \(context.debugDescription)")
-                       case .valueNotFound(let type, let context):
-                           print("Value of type '\(type)' not found: \(context.debugDescription)")
-                       case .dataCorrupted(let context):
-                           print("Data corrupted: \(context.debugDescription)")
-                       @unknown default:
-                           print("Unknown decoding error: \(decodingError)")
-                       }
-                   }
-                   FeedbackService.shared.provideFeedback(.error)
-                   throw NetworkError.decodingError
+                   // We know this is safe because we control the response type
+                   return EmptyResponse() as! T
                }
-           case 401:
-               FeedbackService.shared.provideFeedback(.error)
-               throw NetworkError.authenticationError
-           case 400...499:
-               FeedbackService.shared.provideFeedback(.error)
-               throw NetworkError.badRequest
-           case 500...599:
-               FeedbackService.shared.provideFeedback(.error)
-               throw NetworkError.serverError
-           default:
                FeedbackService.shared.provideFeedback(.error)
                throw NetworkError.invalidResponse
-           }
-       } catch {
-           FeedbackService.shared.provideFeedback(.error)
-           throw error
-       }
+                
+            case 200...299:
+                do {
+                    let result = try JSONDecoder().decode(T.self, from: data)
+                    FeedbackService.shared.provideFeedback(.success)
+                    return result
+                } catch {
+                    print("Decoding error: \(error)")
+                    print("Debug description: \(error.localizedDescription)")
+                    
+                    if let decodingError = error as? DecodingError {
+                        switch decodingError {
+                        case .keyNotFound(let key, let context):
+                            print("Key '\(key.stringValue)' not found: \(context.debugDescription)")
+                        case .typeMismatch(let type, let context):
+                            print("Type '\(type)' mismatch: \(context.debugDescription)")
+                        case .valueNotFound(let type, let context):
+                            print("Value of type '\(type)' not found: \(context.debugDescription)")
+                        case .dataCorrupted(let context):
+                            print("Data corrupted: \(context.debugDescription)")
+                        @unknown default:
+                            print("Unknown decoding error: \(decodingError)")
+                        }
+                    }
+                    FeedbackService.shared.provideFeedback(.error)
+                    throw NetworkError.decodingError
+                }
+            case 401:
+                FeedbackService.shared.provideFeedback(.error)
+                throw NetworkError.authenticationError
+            case 400...499:
+                FeedbackService.shared.provideFeedback(.error)
+                throw NetworkError.badRequest
+            case 500...599:
+                FeedbackService.shared.provideFeedback(.error)
+                throw NetworkError.serverError
+            default:
+                FeedbackService.shared.provideFeedback(.error)
+                throw NetworkError.invalidResponse
+            }
+        } catch {
+            FeedbackService.shared.provideFeedback(.error)
+            throw error
+        }
     }
     
     // When initializing the service, check for existing token
@@ -200,8 +212,8 @@ class JournalServiceLive: JournalService {
         )
         
         // For DELETE requests that return no content, decode as EmptyResponse
-        struct EmptyResponse: Decodable {}
         let _: EmptyResponse = try await performNetworkRequest(request: request)
+        print("Delete operation completed successfully")
     }
 
     func createEvent(with _: EventCreate) async throws -> Event {
