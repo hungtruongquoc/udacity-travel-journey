@@ -61,6 +61,7 @@ struct EventForm: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.journalService) private var journalService
+    @Environment(\.journalServiceLive) private var journalServiceLive
 
     // MARK: - Body
 
@@ -234,7 +235,7 @@ struct EventForm: View {
                 location: location,
                 transitionFromPrevious: transitionFromPrevious?.nonEmpty
             )
-            try await journalService.createEvent(with: request)
+            try await journalServiceLive.createEvent(with: request)
             await MainActor.run {
                 updateHandler()
                 dismiss()

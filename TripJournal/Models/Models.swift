@@ -100,6 +100,42 @@ struct Event: Identifiable, Sendable, Hashable, Codable {
     var location: Location?
     var medias: [Media]
     var transitionFromPrevious: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case note
+        case date
+        case location
+        case medias
+        case transitionFromPrevious = "transition_from_previous"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        id = try container.decode(Int.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        note = try container.decodeIfPresent(String.self, forKey: .note)
+        
+        // Handle date decoding from ISO8601 string
+        let dateString = try container.decode(String.self, forKey: .date)
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+        
+        guard let parsedDate = isoFormatter.date(from: dateString) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .date,
+                in: container,
+                debugDescription: "Date string does not match ISO8601 format"
+            )
+        }
+        date = parsedDate.convertToLocalTime()
+        
+        location = try container.decodeIfPresent(Location.self, forKey: .location)
+        medias = try container.decode([Media].self, forKey: .medias)
+        transitionFromPrevious = try container.decodeIfPresent(String.self, forKey: .transitionFromPrevious)
+    }
 }
 
 /// Represents a location.

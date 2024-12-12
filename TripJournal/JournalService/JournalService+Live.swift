@@ -244,8 +244,19 @@ class JournalServiceLive: JournalService {
         print("Delete operation completed successfully")
     }
 
-    func createEvent(with _: EventCreate) async throws -> Event {
-        fatalError("Unimplemented createEvent")
+    func createEvent(with eventCreate: EventCreate) async throws -> Event {
+        guard let url = URL(string: APIEndpoints.Events.create) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = try setupRequest(
+            for: url,
+            method: "POST",
+            body: eventCreate,
+            requiresAuth: true
+        )
+        
+        return try await performNetworkRequest(request: request)
     }
 
     func updateEvent(withId _: Event.ID, and _: EventUpdate) async throws -> Event {
