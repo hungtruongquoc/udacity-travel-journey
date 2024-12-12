@@ -32,6 +32,7 @@
 		07F6695D2B589A1E002F8D18 /* AddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6695C2B589A1E002F8D18 /* AddButton.swift */; };
 		19C44E682D0A6DA7008517D9 /* JournalService+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C44E672D0A6DA7008517D9 /* JournalService+Live.swift */; };
 		19C44E6A2D0A7103008517D9 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C44E692D0A7103008517D9 /* APIConfig.swift */; };
+		19C44E6C2D0A7558008517D9 /* Exceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C44E6B2D0A7558008517D9 /* Exceptions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +62,7 @@
 		07F6695C2B589A1E002F8D18 /* AddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButton.swift; sourceTree = "<group>"; };
 		19C44E672D0A6DA7008517D9 /* JournalService+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalService+Live.swift"; sourceTree = "<group>"; };
 		19C44E692D0A7103008517D9 /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
+		19C44E6B2D0A7558008517D9 /* Exceptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exceptions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +166,7 @@
 				07BCBA882B5D65AD00C6F687 /* JournalService+Unimplemented.swift */,
 				19C44E672D0A6DA7008517D9 /* JournalService+Live.swift */,
 				19C44E692D0A7103008517D9 /* APIConfig.swift */,
+				19C44E6B2D0A7558008517D9 /* Exceptions.swift */,
 			);
 			path = JournalService;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				075A90F72B446A5C009A1DCB /* TripForm.swift in Sources */,
 				07BCBA872B5D656E00C6F687 /* JournalService+Mock.swift in Sources */,
 				0767E7102B573F6300993870 /* LocationSearchView.swift in Sources */,
+				19C44E6C2D0A7558008517D9 /* Exceptions.swift in Sources */,
 				075A90FB2B446A80009A1DCB /* EventCell.swift in Sources */,
 				07BCBA8F2B5D7EC500C6F687 /* MediaCarousel.swift in Sources */,
 				07F6695D2B589A1E002F8D18 /* AddButton.swift in Sources */,

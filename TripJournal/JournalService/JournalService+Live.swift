@@ -12,8 +12,50 @@ class JournalServiceLive: JournalService {
         fatalError("Unimplemented isAuthenticated")
     }
 
-    func register(username _: String, password _: String) async throws -> Token {
-        fatalError("Unimplemented register")
+    func register(username: String, password: String) async throws -> Token {
+        guard let url = URL(string: APIEndpoints.Auth.register) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let body = [
+            "username": username,
+            "password": password
+        ]
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "accept")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(body)
+        } catch {
+            throw NetworkError.badRequest
+        }
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkError.invalidResponse
+        }
+        
+        switch httpResponse.statusCode {
+        case 200...299:
+            do {
+                let token = try JSONDecoder().decode(Token.self, from: data)
+                return token
+            } catch {
+                throw NetworkError.decodingError
+            }
+        case 401:
+            throw NetworkError.authenticationError
+        case 400...499:
+            throw NetworkError.badRequest
+        case 500...599:
+            throw NetworkError.serverError
+        default:
+            throw NetworkError.invalidResponse
+        }
     }
 
     func logOut() {
