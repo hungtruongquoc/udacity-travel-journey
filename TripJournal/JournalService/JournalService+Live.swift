@@ -10,6 +10,13 @@ import Foundation
 class JournalServiceLive: JournalService {
     private func storeToken(_ token: Token) throws {
         try KeychainService.shared.saveToken(token)
+        authenticationSubject.send(true)
+    }
+    
+    private let authenticationSubject = CurrentValueSubject<Bool, Never>(false)
+    
+    var isAuthenticated: AnyPublisher<Bool, Never> {
+        authenticationSubject.eraseToAnyPublisher()
     }
     
     private func setupRequest(
@@ -87,10 +94,13 @@ class JournalServiceLive: JournalService {
            FeedbackService.shared.provideFeedback(.error)
            throw error
        }
-   }
+    }
     
-    var isAuthenticated: AnyPublisher<Bool, Never> {
-        fatalError("Unimplemented isAuthenticated")
+    // When initializing the service, check for existing token
+    init() {
+       if let _ = try? KeychainService.shared.retrieveToken() {
+           authenticationSubject.send(true)
+       }
     }
 
     func register(username: String, password: String) async throws -> Token {
@@ -107,6 +117,7 @@ class JournalServiceLive: JournalService {
 
     func logOut() {
         try? KeychainService.shared.deleteToken()
+        authenticationSubject.send(false)
     }
 
     func logIn(username: String, password: String) async throws -> Token {

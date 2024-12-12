@@ -19,6 +19,9 @@ struct RootView: View {
             .onReceive(service.isAuthenticated.receive(on: DispatchQueue.main)) { isAuthenticated in
                 self.isAuthenticated = isAuthenticated
             }
+            .onReceive(serviceLive.isAuthenticated.receive(on: DispatchQueue.main)) { isAuthenticated in
+                self.isAuthenticated = isAuthenticated
+            }
     }
 
     // MARK: - Views
