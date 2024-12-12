@@ -38,6 +38,11 @@ struct TripList: View {
                             await fetchTrips()
                         }
                     }
+                    .onAppear {
+                        Task {
+                            await fetchTrips()
+                        }
+                    }
                 }
                 .sheet(item: $tripFormMode) { mode in
                     TripForm(mode: mode) {
@@ -147,7 +152,10 @@ struct TripList: View {
         }
         error = nil
         do {
-            trips = try await journalServiceLive.getTrips()
+            let newTrips = try await journalServiceLive.getTrips()
+            await MainActor.run {
+                trips = newTrips  // This assignment will now trigger view updates
+            }
         } catch {
             self.error = error
         }

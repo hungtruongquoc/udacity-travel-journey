@@ -11,7 +11,11 @@ struct TripCell: View {
         NavigationLink(value: trip) {
             VStack(alignment: .leading) {
                 nameLabel
-                dateLabel
+                HStack {
+                    dateLabel
+                    Spacer()
+                    eventCountLabel
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -33,16 +37,23 @@ struct TripCell: View {
     // MARK: - Views
 
     private var dateLabel: some View {
-        HStack(alignment: .center, spacing: 4) {
-            Text(trip.startDate, style: .date)
-            Text("-")
-            Text(trip.endDate, style: .date)
-        }
-        .font(.footnote)
+       HStack(alignment: .center, spacing: 4) {
+           Text(trip.startDate, style: .date)
+           Text("-")
+           Text(trip.endDate, style: .date)
+       }
+       .font(.footnote)
+       .foregroundStyle(.secondary)
     }
 
     private var nameLabel: some View {
-        Text(trip.name)
-            .font(.headline)
+       Text(trip.name)
+           .font(.headline)
+    }
+
+    private var eventCountLabel: some View {
+       Text("\(trip.events.count) \(trip.events.count == 1 ? "event" : "events")")
+           .font(.footnote)
+           .foregroundStyle(.secondary)
     }
 }

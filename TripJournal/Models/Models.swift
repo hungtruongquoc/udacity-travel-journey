@@ -89,6 +89,23 @@ struct Trip: Identifiable, Sendable, Hashable, Codable {
         try container.encode(isoFormatter.string(from: utcEndDate), forKey: .endDate)
         try container.encode(events, forKey: .events)
     }
+    
+    // Add explicit implementations of Hashable and Equatable
+    static func == (lhs: Trip, rhs: Trip) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.name == rhs.name &&
+        lhs.startDate == rhs.endDate &&
+        lhs.endDate == rhs.endDate &&
+        lhs.events == rhs.events  // This ensures changes to events trigger updates
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(name)
+        hasher.combine(startDate)
+        hasher.combine(endDate)
+        hasher.combine(events)  // Include events in hash computation
+    }
 }
 
 /// Represents an event in a trip.
