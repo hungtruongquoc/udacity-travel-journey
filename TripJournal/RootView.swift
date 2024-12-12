@@ -1,19 +1,19 @@
 import SwiftUI
 
 struct RootView: View {
-    let serviceLive: JournalServiceLive
+    let service: JournalService
 
     @State private var addAction: () -> Void = {}
     @State private var isAuthenticated = false
 
-    @Environment(\.journalServiceLive) private var journalServiceLive
+    @Environment(\.journalService) private var journalService
 
     // MARK: - Body
 
     var body: some View {
         content
-            .environment(\.journalServiceLive, serviceLive)
-            .onReceive(serviceLive.isAuthenticated.receive(on: DispatchQueue.main)) { isAuthenticated in
+            .environment(\.journalService, service)
+            .onReceive(service.isAuthenticated.receive(on: DispatchQueue.main)) { isAuthenticated in
                 self.isAuthenticated = isAuthenticated
             }
     }

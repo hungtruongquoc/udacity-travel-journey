@@ -4,7 +4,7 @@ import SwiftUI
 struct TripJournalApp: App {
     var body: some Scene {
         WindowGroup {
-            RootView(serviceLive: JournalServiceLive())
+            RootView(service: JournalServiceLive())
         }
     }
 }

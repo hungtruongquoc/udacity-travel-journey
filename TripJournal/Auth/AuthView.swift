@@ -16,8 +16,7 @@ struct AuthView: View {
     @State private var showAuthError = false
     @State private var authError: AuthenticationError?
 
-    @Environment(\.journalService) private var journalService
-    @Environment(\.journalServiceLive) private var journalServiceLive
+    @Environment(\.journalService) private var journalService: JournalService
 
     // MARK: - Body
 
@@ -111,7 +110,7 @@ struct AuthView: View {
         isLoading = true
         do {
             try validateForm()
-            try await journalServiceLive.logIn(username: username, password: password)
+            try await journalService.logIn(username: username, password: password)
         } catch let authError as AuthenticationError {
             self.authError = authError
             self.showAuthError = true
@@ -125,7 +124,7 @@ struct AuthView: View {
         isLoading = true
         do {
             try validateForm()
-            try await journalServiceLive.register(username: username, password: password)
+            try await journalService.register(username: username, password: password)
         } catch let authError as AuthenticationError {
             self.authError = authError
             self.showAuthError = true

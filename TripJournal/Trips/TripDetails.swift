@@ -26,8 +26,7 @@ struct TripDetails: View {
     @State private var selectedEventForDeletion: Event?
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.journalService) private var journalService
-    @Environment(\.journalServiceLive) private var journalServiceLive
+    @Environment(\.journalService) private var journalService: JournalService
 
     var body: some View {
         contentView
@@ -139,7 +138,7 @@ struct TripDetails: View {
         isLoading = true
         let request = MediaCreate(eventId: eventId, base64Data: data, caption: nil)
         do {
-            try await journalServiceLive.createMedia(with: request)
+            try await journalService.createMedia(with: request)
             await reloadTrip()
         } catch {
             self.error = error
@@ -150,7 +149,7 @@ struct TripDetails: View {
     private func deleteMedia(withId mediaId: Media.ID) async {
         isLoading = true
         do {
-            try await journalServiceLive.deleteMedia(withId: mediaId)
+            try await journalService.deleteMedia(withId: mediaId)
             await reloadTrip()
         } catch {
             self.error = error
@@ -161,7 +160,7 @@ struct TripDetails: View {
     private func reloadTrip() async {
         let id = trip.id
         do {
-            let updatedTrip = try await journalServiceLive.getTrip(withId: id)
+            let updatedTrip = try await journalService.getTrip(withId: id)
             trip = updatedTrip
         } catch {
             self.error = error
@@ -171,7 +170,7 @@ struct TripDetails: View {
     private func deleteTrip() async {
         isLoading = true
         do {
-            try await journalServiceLive.deleteTrip(withId: trip.id)
+            try await journalService.deleteTrip(withId: trip.id)
             await MainActor.run {
                 deletionHandler()
                 dismiss()
@@ -189,7 +188,7 @@ struct TripDetails: View {
     private func deleteEvent(_ event: Event) async {
         isLoading = true
         do {
-            try await journalServiceLive.deleteEvent(withId: event.id)
+            try await journalService.deleteEvent(withId: event.id)
             await reloadTrip()
             await MainActor.run {
                 isLoading = false

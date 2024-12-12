@@ -51,8 +51,7 @@ struct TripForm: View {
     @State private var error: Error?
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.journalService) private var journalService
-    @Environment(\.journalServiceLive) private var journalServiceLive
+    @Environment(\.journalService) private var journalService: JournalService
 
     // MARK: - Body
 
@@ -147,7 +146,7 @@ struct TripForm: View {
         do {
             try validateForm()
             let request = TripCreate(name: name, startDate: startDate, endDate: endDate)
-            try await journalServiceLive.createTrip(with: request)
+            try await journalService.createTrip(with: request)
             await MainActor.run {
                 updateHandler()
                 dismiss()
@@ -163,7 +162,7 @@ struct TripForm: View {
         do {
             try validateForm()
             let request = TripUpdate(name: name, startDate: startDate, endDate: endDate)
-            try await journalServiceLive.updateTrip(withId: id, and: request)
+            try await journalService.updateTrip(withId: id, and: request)
             await MainActor.run {
                 updateHandler()
                 dismiss()
@@ -177,7 +176,7 @@ struct TripForm: View {
     private func deleteTrip(withId id: Trip.ID) async {
         isLoading = true
         do {
-            try await journalServiceLive.deleteTrip(withId: id)
+            try await journalService.deleteTrip(withId: id)
             await MainActor.run {
                 updateHandler()
                 dismiss()

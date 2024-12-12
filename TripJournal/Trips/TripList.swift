@@ -9,8 +9,7 @@ struct TripList: View {
     @State private var tripFormMode: TripForm.Mode?
     @State private var isLogoutConfirmationDialogPresented = false
 
-    @Environment(\.journalService) private var journalService
-    @Environment(\.journalServiceLive) private var journalServiceLive
+    @Environment(\.journalService) private var journalService: JournalService
 
     // Add a computed property for the navigation title
     private var navigationTitle: String {
@@ -57,7 +56,7 @@ struct TripList: View {
                     titleVisibility: .visible,
                     actions: {
                         Button("Log out", role: .destructive) {
-                            journalServiceLive.logOut()
+                            journalService.logOut()
                         }
                     },
                     message: {
@@ -152,7 +151,7 @@ struct TripList: View {
         }
         error = nil
         do {
-            let newTrips = try await journalServiceLive.getTrips()
+            let newTrips = try await journalService.getTrips()
             await MainActor.run {
                 trips = newTrips  // This assignment will now trigger view updates
             }
@@ -165,7 +164,7 @@ struct TripList: View {
     private func deleteTrip(withId id: Trip.ID) async {
         isLoading = true
         do {
-            try await journalServiceLive.deleteTrip(withId: id)
+            try await journalService.deleteTrip(withId: id)
             await fetchTrips()
         } catch {
             self.error = error
