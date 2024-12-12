@@ -125,8 +125,24 @@ class JournalServiceLive: JournalService {
             throw NetworkError.invalidURL
         }
         
-        let body = ["username": username, "password": password]
-        let request = try setupRequest(for: url, method: "POST", body: body)
+        // Create form URL-encoded body
+        let parameters = [
+            "grant_type": "",
+            "username": username,
+            "password": password
+        ]
+        let formBody = parameters
+            .map { "\($0.key)=\($0.value)" }
+            .joined(separator: "&")
+            .data(using: .utf8)
+        
+        // Setup request with form encoding
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = formBody
+        
         let token: Token = try await performNetworkRequest(request: request)
         try storeToken(token)
         return token
