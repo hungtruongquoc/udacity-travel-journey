@@ -1,10 +1,25 @@
 import Foundation
 
 /// An object that can be used to create a new trip.
-struct TripCreate {
+struct TripCreate: Encodable {
     let name: String
     let startDate: Date
     let endDate: Date
+    
+    enum CodingKeys: String, CodingKey {
+       case name
+       case startDate = "start_date"
+       case endDate = "end_date"
+   }
+   
+   func encode(to encoder: Encoder) throws {
+       var container = encoder.container(keyedBy: CodingKeys.self)
+       try container.encode(name, forKey: .name)
+       
+       let dateFormatter = ISO8601DateFormatter()
+       try container.encode(dateFormatter.string(from: startDate), forKey: .startDate)
+       try container.encode(dateFormatter.string(from: endDate), forKey: .endDate)
+   }
 }
 
 /// An object that can be used to update an existing trip.

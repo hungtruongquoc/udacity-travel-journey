@@ -52,6 +52,7 @@ struct TripForm: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.journalService) private var journalService
+    @Environment(\.journalServiceLive) private var journalServiceLive
 
     // MARK: - Body
 
@@ -146,7 +147,7 @@ struct TripForm: View {
         do {
             try validateForm()
             let request = TripCreate(name: name, startDate: startDate, endDate: endDate)
-            try await journalService.createTrip(with: request)
+            try await journalServiceLive.createTrip(with: request)
             await MainActor.run {
                 updateHandler()
                 dismiss()

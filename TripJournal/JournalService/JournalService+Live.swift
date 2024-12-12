@@ -151,8 +151,19 @@ class JournalServiceLive: JournalService {
         }
     }
 
-    func createTrip(with _: TripCreate) async throws -> Trip {
-        fatalError("Unimplemented createTrip")
+    func createTrip(with trip: TripCreate) async throws -> Trip {
+        guard let url = URL(string: APIEndpoints.Trips.create) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = try setupRequest(
+            for: url,
+            method: "POST",
+            body: trip,
+            requiresAuth: true
+        )
+        
+        return try await performNetworkRequest(request: request)
     }
 
     func getTrips() async throws -> [Trip] {

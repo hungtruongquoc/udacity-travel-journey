@@ -309,39 +309,40 @@ import Foundation
         }
 
         static let sample: [Self] = {
-            let amsterdamAdventure = Trip(
-                id: 1,
-                name: "Amsterdam Adventure",
-                startDate: Date(day: 1, month: 6, year: 2024),
-                endDate: Date(day: 5, month: 6, year: 2024),
-                events: Event.amsterdam
-            )
-
-            let romeRetreat = Trip(
-                id: 2,
-                name: "Rome Retreat",
-                startDate: Date(day: 10, month: 7, year: 2024),
-                endDate: Date(day: 15, month: 7, year: 2024),
-                events: Event.rome
-            )
-
-            let tokyoTour = Trip(
-                id: 3,
-                name: "Tokyo Tour",
-                startDate: Date(day: 20, month: 8, year: 2024),
-                endDate: Date(day: 25, month: 8, year: 2024),
-                events: Event.tokyo
-            )
-
-            let parisPilgrimage = Trip(
-                id: 4,
-                name: "Paris Pilgrimage",
-                startDate: Date(day: 5, month: 9, year: 2024),
-                endDate: Date(day: 10, month: 9, year: 2024),
-                events: Event.paris
-            )
-
-            return [amsterdamAdventure, romeRetreat, tokyoTour, parisPilgrimage]
+//            let amsterdamAdventure = Trip(
+//                id: 1,
+//                name: "Amsterdam Adventure",
+//                startDate: Date(day: 1, month: 6, year: 2024),
+//                endDate: Date(day: 5, month: 6, year: 2024),
+//                events: Event.amsterdam
+//            )
+//
+//            let romeRetreat = Trip(
+//                id: 2,
+//                name: "Rome Retreat",
+//                startDate: Date(day: 10, month: 7, year: 2024),
+//                endDate: Date(day: 15, month: 7, year: 2024),
+//                events: Event.rome
+//            )
+//
+//            let tokyoTour = Trip(
+//                id: 3,
+//                name: "Tokyo Tour",
+//                startDate: Date(day: 20, month: 8, year: 2024),
+//                endDate: Date(day: 25, month: 8, year: 2024),
+//                events: Event.tokyo
+//            )
+//
+//            let parisPilgrimage = Trip(
+//                id: 4,
+//                name: "Paris Pilgrimage",
+//                startDate: Date(day: 5, month: 9, year: 2024),
+//                endDate: Date(day: 10, month: 9, year: 2024),
+//                events: Event.paris
+//            )
+//
+//            return [amsterdamAdventure, romeRetreat, tokyoTour, parisPilgrimage]
+            return []
         }()
     }
 
