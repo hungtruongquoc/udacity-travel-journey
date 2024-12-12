@@ -259,8 +259,19 @@ class JournalServiceLive: JournalService {
         return try await performNetworkRequest(request: request)
     }
 
-    func updateEvent(withId _: Event.ID, and _: EventUpdate) async throws -> Event {
-        fatalError("Unimplemented updateEvent")
+    func updateEvent(withId eventId: Event.ID, and update: EventUpdate) async throws -> Event {
+        guard let url = URL(string: APIEndpoints.Events.update(id: "\(eventId)")) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = try setupRequest(
+            for: url,
+            method: "PUT",
+            body: update,
+            requiresAuth: true
+        )
+        
+        return try await performNetworkRequest(request: request)
     }
 
     func deleteEvent(withId eventId: Event.ID) async throws {
