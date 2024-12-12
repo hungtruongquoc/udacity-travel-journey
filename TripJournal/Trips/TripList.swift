@@ -10,6 +10,7 @@ struct TripList: View {
     @State private var isLogoutConfirmationDialogPresented = false
 
     @Environment(\.journalService) private var journalService
+    @Environment(\.journalServiceLive) private var journalServiceLive
 
     // MARK: - Body
 
@@ -42,7 +43,7 @@ struct TripList: View {
                     titleVisibility: .visible,
                     actions: {
                         Button("Log out", role: .destructive) {
-                            journalService.logOut()
+                            journalServiceLive.logOut()
                         }
                     },
                     message: {
