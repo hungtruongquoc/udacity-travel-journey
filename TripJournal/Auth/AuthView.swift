@@ -32,7 +32,10 @@ struct AuthView: View {
     }
 
     // MARK: - Views
-
+    private var isFormValid: Bool {
+        username.nonEmpty != nil && password.nonEmpty != nil
+    }
+    
     private func header() -> some View {
         Image(.authHeader)
             .resizable()
@@ -70,6 +73,7 @@ struct AuthView: View {
             )
             .buttonBorderShape(.capsule)
             .buttonStyle(.borderedProminent)
+            .disabled(!isFormValid)
 
             Button(
                 action: {
@@ -84,6 +88,7 @@ struct AuthView: View {
             )
             .buttonBorderShape(.capsule)
             .buttonStyle(.bordered)
+            .disabled(!isFormValid)
         }
         .padding()
     }
