@@ -33,6 +33,7 @@
 		19C44E682D0A6DA7008517D9 /* JournalService+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C44E672D0A6DA7008517D9 /* JournalService+Live.swift */; };
 		19C44E6A2D0A7103008517D9 /* APIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C44E692D0A7103008517D9 /* APIConfig.swift */; };
 		19C44E6C2D0A7558008517D9 /* Exceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C44E6B2D0A7558008517D9 /* Exceptions.swift */; };
+		19F72CEC2D0A966700C58038 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F72CEB2D0A966700C58038 /* KeychainService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,7 @@
 		19C44E692D0A7103008517D9 /* APIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfig.swift; sourceTree = "<group>"; };
 		19C44E6B2D0A7558008517D9 /* Exceptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exceptions.swift; sourceTree = "<group>"; };
 		19C44E6D2D0A77B8008517D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		19F72CEB2D0A966700C58038 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +171,7 @@
 				19C44E672D0A6DA7008517D9 /* JournalService+Live.swift */,
 				19C44E692D0A7103008517D9 /* APIConfig.swift */,
 				19C44E6B2D0A7558008517D9 /* Exceptions.swift */,
+				19F72CEB2D0A966700C58038 /* KeychainService.swift */,
 			);
 			path = JournalService;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 				075A91012B446B17009A1DCB /* AuthView.swift in Sources */,
 				0703FC742B4583B80084DD8A /* JournalService.swift in Sources */,
 				07AA89D72B5F251800405269 /* Requests.swift in Sources */,
+				19F72CEC2D0A966700C58038 /* KeychainService.swift in Sources */,
 				075A90E32B446996009A1DCB /* App.swift in Sources */,
 				075A90FD2B446AA9009A1DCB /* Utils.swift in Sources */,
 				075A90FF2B446AD6009A1DCB /* EventForm.swift in Sources */,

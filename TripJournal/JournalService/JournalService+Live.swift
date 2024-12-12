@@ -8,31 +8,33 @@ import Combine
 import Foundation
 
 class JournalServiceLive: JournalService {
-    var isAuthenticated: AnyPublisher<Bool, Never> {
-        fatalError("Unimplemented isAuthenticated")
+    private func storeToken(_ token: Token) throws {
+        try KeychainService.shared.saveToken(token)
     }
-
-    func register(username: String, password: String) async throws -> Token {
-        guard let url = URL(string: APIEndpoints.Auth.register) else {
-            throw NetworkError.invalidURL
-        }
-        
-        let body = [
-            "username": username,
-            "password": password
-        ]
-        
+    
+    private func setupRequest(
+        for url: URL,
+        method: String,
+        body: Encodable? = nil,
+        requiresAuth: Bool = false
+    ) throws -> URLRequest {
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json", forHTTPHeaderField: "accept")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
         
-        do {
-            request.httpBody = try JSONEncoder().encode(body)
-        } catch {
-            throw NetworkError.badRequest
+        if requiresAuth, let token = try? KeychainService.shared.retrieveToken() {
+            request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
         }
         
+        if let body = body {
+            request.httpBody = try JSONEncoder().encode(body)
+        }
+        
+        return request
+    }
+    
+    private func performNetworkRequest<T: Decodable>(request: URLRequest) async throws -> T {
         let (data, response) = try await URLSession.shared.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -42,10 +44,8 @@ class JournalServiceLive: JournalService {
         switch httpResponse.statusCode {
         case 200...299:
             do {
-                let token = try JSONDecoder().decode(Token.self, from: data)
-                return token
+                return try JSONDecoder().decode(T.self, from: data)
             } catch {
-                // Print detailed decoding error
                 print("Decoding error: \(error)")
                 print("Debug description: \(error.localizedDescription)")
                 
@@ -75,13 +75,37 @@ class JournalServiceLive: JournalService {
             throw NetworkError.invalidResponse
         }
     }
-
-    func logOut() {
-        fatalError("Unimplemented logOut")
+    
+    var isAuthenticated: AnyPublisher<Bool, Never> {
+        fatalError("Unimplemented isAuthenticated")
     }
 
-    func logIn(username _: String, password _: String) async throws -> Token {
-        fatalError("Unimplemented logIn")
+    func register(username: String, password: String) async throws -> Token {
+        guard let url = URL(string: APIEndpoints.Auth.register) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let body = ["username": username, "password": password]
+        let request = try setupRequest(for: url, method: "POST", body: body)
+        let token: Token = try await performNetworkRequest(request: request)
+        try storeToken(token)
+        return token
+    }
+
+    func logOut() {
+        try? KeychainService.shared.deleteToken()
+    }
+
+    func logIn(username: String, password: String) async throws -> Token {
+        guard let url = URL(string: APIEndpoints.Auth.login) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let body = ["username": username, "password": password]
+        let request = try setupRequest(for: url, method: "POST", body: body)
+        let token: Token = try await performNetworkRequest(request: request)
+        try storeToken(token)
+        return token
     }
 
     func createTrip(with _: TripCreate) async throws -> Trip {

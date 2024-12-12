@@ -17,7 +17,7 @@ enum APIEndpoints {
     struct Auth {
         private static let base = baseURL + "/auth"
         static let register = baseURL + "/register"
-        static let token = baseURL + "/token"
+        static let login = baseURL + "/token"
     }
     
     // MARK: - Trips
