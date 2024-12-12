@@ -163,7 +163,7 @@ struct TripForm: View {
         do {
             try validateForm()
             let request = TripUpdate(name: name, startDate: startDate, endDate: endDate)
-            try await journalService.updateTrip(withId: id, and: request)
+            try await journalServiceLive.updateTrip(withId: id, and: request)
             await MainActor.run {
                 updateHandler()
                 dismiss()

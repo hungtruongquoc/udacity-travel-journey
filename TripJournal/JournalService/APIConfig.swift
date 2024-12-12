@@ -30,7 +30,7 @@ enum APIEndpoints {
         static func detail(id: String) -> String {
             return "\(base)/\(id)"
         }
-        
+
         static func update(id: String) -> String {
             return "\(base)/\(id)"
         }

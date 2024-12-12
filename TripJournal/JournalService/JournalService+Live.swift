@@ -196,8 +196,26 @@ class JournalServiceLive: JournalService {
         fatalError("Unimplemented getTrip")
     }
 
-    func updateTrip(withId _: Trip.ID, and _: TripUpdate) async throws -> Trip {
-        fatalError("Unimplemented updateTrip")
+    func updateTrip(withId tripId: Trip.ID, and update: TripUpdate) async throws -> Trip {
+        guard let url = URL(string: APIEndpoints.Trips.update(id: "\(tripId)")) else {
+            throw NetworkError.invalidURL
+        }
+        
+        // Create an encodable structure that matches the API's expected format
+        let updateBody = TripCreate(
+            name: update.name,
+            startDate: update.startDate.convertToUTC(),
+            endDate: update.endDate.convertToUTC()
+        )
+        
+        let request = try setupRequest(
+            for: url,
+            method: "PUT",
+            body: updateBody,
+            requiresAuth: true
+        )
+        
+        return try await performNetworkRequest(request: request)
     }
 
     func deleteTrip(withId tripId: Trip.ID) async throws {
