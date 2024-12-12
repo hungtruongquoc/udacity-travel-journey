@@ -77,7 +77,6 @@ struct EventForm: View {
     @State private var isLocationPickerPresented = false
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.journalService) private var journalService
     @Environment(\.journalServiceLive) private var journalServiceLive
 
     // MARK: - Body
@@ -274,7 +273,7 @@ struct EventForm: View {
                 location: location,
                 transitionFromPrevious: transitionFromPrevious?.nonEmpty
             )
-            try await journalService.updateEvent(withId: id, and: request)
+            try await journalServiceLive.updateEvent(withId: id, and: request)
             await MainActor.run {
                 updateHandler()
                 dismiss()
@@ -288,7 +287,7 @@ struct EventForm: View {
     private func deleteEvent(withId id: Event.ID) async {
         isLoading = true
         do {
-            try await journalService.deleteEvent(withId: id)
+            try await journalServiceLive.deleteEvent(withId: id)
             await MainActor.run {
                 updateHandler()
                 dismiss()
