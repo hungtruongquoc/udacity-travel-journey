@@ -4,6 +4,7 @@ import SwiftUI
 struct EventCell: View {
     let event: Event
     let edit: () -> Void
+    let delete: () -> Void
     let mediaUploadHandler: (Data) -> Void
     let mediaDeletionHandler: (Media.ID) -> Void
 
@@ -72,11 +73,21 @@ struct EventCell: View {
                     .lineLimit(5)
             }
 
-            Button("Edit", systemImage: "pencil", action: edit)
+            HStack(spacing: 12) {
+                Button("Edit", systemImage: "pencil", action: edit)
+                    .buttonBorderShape(.circle)
+                    .buttonStyle(.bordered)
+                    .font(.callout)
+
+                Button(action: delete) {
+                    Label("Delete", systemImage: "trash")
+                        .foregroundStyle(.red)
+                }
                 .buttonBorderShape(.circle)
                 .buttonStyle(.bordered)
                 .font(.callout)
-                .padding(.top, 10)
+            }
+            .padding(.top, 10)
         }
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(.horizontal, 20)

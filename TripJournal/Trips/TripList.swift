@@ -12,12 +12,21 @@ struct TripList: View {
     @Environment(\.journalService) private var journalService
     @Environment(\.journalServiceLive) private var journalServiceLive
 
+    // Add a computed property for the navigation title
+    private var navigationTitle: String {
+        let count = trips.count
+        if 0 == count {
+            return "Trip"
+        }
+        return count == 1 ? "1 Trip" : "\(count) Trips"
+    }
+    
     // MARK: - Body
 
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle("Trips")
+                .navigationTitle(navigationTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(content: toolbar)
                 .onAppear {

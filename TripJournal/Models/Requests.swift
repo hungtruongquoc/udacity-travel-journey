@@ -76,7 +76,8 @@ struct EventCreate: Encodable {
         try container.encode(note, forKey: .note)
         
         let dateFormatter = ISO8601DateFormatter()
-        try container.encode(dateFormatter.string(from: date), forKey: .date)
+        let utcDate = date.convertToUTC()  // Convert to UTC before encoding
+        try container.encode(dateFormatter.string(from: utcDate), forKey: .date)
         
         try container.encode(location, forKey: .location)
         try container.encode(transitionFromPrevious, forKey: .transitionFromPrevious)

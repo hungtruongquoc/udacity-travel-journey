@@ -18,9 +18,12 @@ struct TripDetails: View {
 
     @State private var trip: Trip
     @State private var eventFormMode: EventForm.Mode?
+    // Added new state variables for event deletion
+    @State private var isEventDeleteConfirmationPresented = false
     @State private var isDeleteConfirmationPresented = false
     @State private var isLoading = false
     @State private var error: Error?
+    @State private var selectedEventForDeletion: Event?
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.journalService) private var journalService
@@ -34,13 +37,29 @@ struct TripDetails: View {
                     await reloadTrip()
                 }
             }
-            .navigationTitle(trip.name)
+            .navigationTitle(
+                {
+                    if trip.events.isEmpty {
+                        return trip.name
+                    }
+                    return "\(trip.name) - \(trip.events.count) event(s)"
+                }()
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: toolbar)
             .sheet(item: $eventFormMode) { mode in
                 EventForm(tripId: trip.id, mode: mode,  tripStartDate: trip.startDate, tripEndDate: trip.endDate) {
                     Task {
                         await reloadTrip()
+                    }
+                }
+            }
+            .confirmationDialog("Delete Event?", isPresented: $isEventDeleteConfirmationPresented) {
+                Button("Delete Event", role: .destructive) {
+                    if let event = selectedEventForDeletion {
+                        Task {
+                            await deleteEvent(event)
+                        }
                     }
                 }
             }
@@ -79,6 +98,11 @@ struct TripDetails: View {
                 EventCell(
                     event: event,
                     edit: { eventFormMode = .edit(event) },
+                    // Added delete action
+                   delete: {
+                       selectedEventForDeletion = event
+                       isEventDeleteConfirmationPresented = true
+                   },
                     mediaUploadHandler: { data in
                         Task {
                             await uploadMedia(eventId: event.id, data: data)
@@ -151,6 +175,23 @@ struct TripDetails: View {
             await MainActor.run {
                 deletionHandler()
                 dismiss()
+                isLoading = false
+            }
+        } catch {
+            await MainActor.run {
+                self.error = error
+                isLoading = false
+            }
+        }
+    }
+    
+    // Added event deletion function
+    private func deleteEvent(_ event: Event) async {
+        isLoading = true
+        do {
+            try await journalServiceLive.deleteEvent(withId: event.id)
+            await reloadTrip()
+            await MainActor.run {
                 isLoading = false
             }
         } catch {
