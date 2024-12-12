@@ -45,6 +45,24 @@ class JournalServiceLive: JournalService {
                 let token = try JSONDecoder().decode(Token.self, from: data)
                 return token
             } catch {
+                // Print detailed decoding error
+                print("Decoding error: \(error)")
+                print("Debug description: \(error.localizedDescription)")
+                
+                if let decodingError = error as? DecodingError {
+                    switch decodingError {
+                    case .keyNotFound(let key, let context):
+                        print("Key '\(key.stringValue)' not found: \(context.debugDescription)")
+                    case .typeMismatch(let type, let context):
+                        print("Type '\(type)' mismatch: \(context.debugDescription)")
+                    case .valueNotFound(let type, let context):
+                        print("Value of type '\(type)' not found: \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Data corrupted: \(context.debugDescription)")
+                    @unknown default:
+                        print("Unknown decoding error: \(decodingError)")
+                    }
+                }
                 throw NetworkError.decodingError
             }
         case 401:

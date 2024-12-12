@@ -15,6 +15,7 @@ struct AuthView: View {
     @State private var error: Error?
 
     @Environment(\.journalService) private var journalService
+    @Environment(\.journalServiceLive) private var journalServiceLive
 
     // MARK: - Body
 
@@ -102,7 +103,7 @@ struct AuthView: View {
         isLoading = true
         do {
             try validateForm()
-            try await journalService.logIn(username: username, password: password)
+            try await journalServiceLive.logIn(username: username, password: password)
         } catch {
             self.error = error
         }
@@ -113,7 +114,7 @@ struct AuthView: View {
         isLoading = true
         do {
             try validateForm()
-            try await journalService.register(username: username, password: password)
+            try await journalServiceLive.register(username: username, password: password)
         } catch {
             self.error = error
         }
