@@ -279,8 +279,19 @@ class JournalServiceLive: JournalService {
         print("Event deletion completed successfully")
     }
 
-    func createMedia(with _: MediaCreate) async throws -> Media {
-        fatalError("Unimplemented createMedia")
+    func createMedia(with mediaCreate: MediaCreate) async throws -> Media {
+        guard let url = URL(string: APIEndpoints.Media.upload) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = try setupRequest(
+            for: url,
+            method: "POST",
+            body: mediaCreate,
+            requiresAuth: true
+        )
+        
+        return try await performNetworkRequest(request: request)
     }
 
     func deleteMedia(withId _: Media.ID) async throws {

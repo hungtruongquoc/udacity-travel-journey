@@ -137,9 +137,9 @@ struct TripDetails: View {
 
     private func uploadMedia(eventId: Event.ID, data: Data) async {
         isLoading = true
-        let request = MediaCreate(eventId: eventId, base64Data: data)
+        let request = MediaCreate(eventId: eventId, base64Data: data, caption: nil)
         do {
-            try await journalService.createMedia(with: request)
+            try await journalServiceLive.createMedia(with: request)
             await reloadTrip()
         } catch {
             self.error = error

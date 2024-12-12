@@ -45,10 +45,26 @@ struct TripUpdate: Encodable {
     }
 }
 
-/// An object that can be used to create a media.
-struct MediaCreate {
+// Update MediaCreate struct to match API requirements
+struct MediaCreate: Encodable {
     let eventId: Event.ID
     let base64Data: Data
+    let caption: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case eventId = "event_id"
+        case base64Data = "base64_data"
+        case caption
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(eventId, forKey: .eventId)
+        // Convert Data to base64 string
+        let base64String = base64Data.base64EncodedString()
+        try container.encode(base64String, forKey: .base64Data)
+        try container.encodeIfPresent(caption, forKey: .caption)
+    }
 }
 
 /// An object that can be used to create a new event.
