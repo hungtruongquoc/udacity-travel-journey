@@ -192,8 +192,18 @@ class JournalServiceLive: JournalService {
         return try await performNetworkRequest(request: request)
     }
 
-    func getTrip(withId _: Trip.ID) async throws -> Trip {
-        fatalError("Unimplemented getTrip")
+    func getTrip(withId tripId: Trip.ID) async throws -> Trip {
+        guard let url = URL(string: APIEndpoints.Trips.detail(id: "\(tripId)")) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = try setupRequest(
+            for: url,
+            method: "GET",
+            requiresAuth: true
+        )
+        
+        return try await performNetworkRequest(request: request)
     }
 
     func updateTrip(withId tripId: Trip.ID, and update: TripUpdate) async throws -> Trip {

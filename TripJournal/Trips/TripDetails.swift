@@ -137,7 +137,7 @@ struct TripDetails: View {
     private func reloadTrip() async {
         let id = trip.id
         do {
-            let updatedTrip = try await journalService.getTrip(withId: id)
+            let updatedTrip = try await journalServiceLive.getTrip(withId: id)
             trip = updatedTrip
         } catch {
             self.error = error
