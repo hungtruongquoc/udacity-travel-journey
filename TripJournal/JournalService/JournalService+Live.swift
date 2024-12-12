@@ -35,46 +35,59 @@ class JournalServiceLive: JournalService {
     }
     
     private func performNetworkRequest<T: Decodable>(request: URLRequest) async throws -> T {
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw NetworkError.invalidResponse
-        }
-        
-        switch httpResponse.statusCode {
-        case 200...299:
-            do {
-                return try JSONDecoder().decode(T.self, from: data)
-            } catch {
-                print("Decoding error: \(error)")
-                print("Debug description: \(error.localizedDescription)")
-                
-                if let decodingError = error as? DecodingError {
-                    switch decodingError {
-                    case .keyNotFound(let key, let context):
-                        print("Key '\(key.stringValue)' not found: \(context.debugDescription)")
-                    case .typeMismatch(let type, let context):
-                        print("Type '\(type)' mismatch: \(context.debugDescription)")
-                    case .valueNotFound(let type, let context):
-                        print("Value of type '\(type)' not found: \(context.debugDescription)")
-                    case .dataCorrupted(let context):
-                        print("Data corrupted: \(context.debugDescription)")
-                    @unknown default:
-                        print("Unknown decoding error: \(decodingError)")
-                    }
-                }
-                throw NetworkError.decodingError
-            }
-        case 401:
-            throw NetworkError.authenticationError
-        case 400...499:
-            throw NetworkError.badRequest
-        case 500...599:
-            throw NetworkError.serverError
-        default:
-            throw NetworkError.invalidResponse
-        }
-    }
+       do {
+           let (data, response) = try await URLSession.shared.data(for: request)
+           
+           guard let httpResponse = response as? HTTPURLResponse else {
+               FeedbackService.shared.provideFeedback(.error)
+               throw NetworkError.invalidResponse
+           }
+           
+           switch httpResponse.statusCode {
+           case 200...299:
+               do {
+                   let result = try JSONDecoder().decode(T.self, from: data)
+                   FeedbackService.shared.provideFeedback(.success)
+                   return result
+               } catch {
+                   print("Decoding error: \(error)")
+                   print("Debug description: \(error.localizedDescription)")
+                   
+                   if let decodingError = error as? DecodingError {
+                       switch decodingError {
+                       case .keyNotFound(let key, let context):
+                           print("Key '\(key.stringValue)' not found: \(context.debugDescription)")
+                       case .typeMismatch(let type, let context):
+                           print("Type '\(type)' mismatch: \(context.debugDescription)")
+                       case .valueNotFound(let type, let context):
+                           print("Value of type '\(type)' not found: \(context.debugDescription)")
+                       case .dataCorrupted(let context):
+                           print("Data corrupted: \(context.debugDescription)")
+                       @unknown default:
+                           print("Unknown decoding error: \(decodingError)")
+                       }
+                   }
+                   FeedbackService.shared.provideFeedback(.error)
+                   throw NetworkError.decodingError
+               }
+           case 401:
+               FeedbackService.shared.provideFeedback(.error)
+               throw NetworkError.authenticationError
+           case 400...499:
+               FeedbackService.shared.provideFeedback(.error)
+               throw NetworkError.badRequest
+           case 500...599:
+               FeedbackService.shared.provideFeedback(.error)
+               throw NetworkError.serverError
+           default:
+               FeedbackService.shared.provideFeedback(.error)
+               throw NetworkError.invalidResponse
+           }
+       } catch {
+           FeedbackService.shared.provideFeedback(.error)
+           throw error
+       }
+   }
     
     var isAuthenticated: AnyPublisher<Bool, Never> {
         fatalError("Unimplemented isAuthenticated")
