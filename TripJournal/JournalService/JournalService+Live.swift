@@ -122,30 +122,33 @@ class JournalServiceLive: JournalService {
 
     func logIn(username: String, password: String) async throws -> Token {
         guard let url = URL(string: APIEndpoints.Auth.login) else {
-            throw NetworkError.invalidURL
+           throw NetworkError.invalidURL
         }
-        
-        // Create form URL-encoded body
+
         let parameters = [
-            "grant_type": "",
-            "username": username,
-            "password": password
+           "grant_type": "",
+           "username": username,
+           "password": password
         ]
         let formBody = parameters
-            .map { "\($0.key)=\($0.value)" }
-            .joined(separator: "&")
-            .data(using: .utf8)
-        
-        // Setup request with form encoding
+           .map { "\($0.key)=\($0.value)" }
+           .joined(separator: "&")
+           .data(using: .utf8)
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.httpBody = formBody
-        
-        let token: Token = try await performNetworkRequest(request: request)
-        try storeToken(token)
-        return token
+
+        do {
+           let token: Token = try await performNetworkRequest(request: request)
+           try storeToken(token)
+           return token
+        } catch NetworkError.badRequest, NetworkError.authenticationError {
+           // Convert network error to authentication error for invalid credentials
+           throw AuthenticationError.invalidCredentials
+        }
     }
 
     func createTrip(with _: TripCreate) async throws -> Trip {

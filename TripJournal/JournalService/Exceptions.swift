@@ -15,3 +15,14 @@ enum NetworkError: Error {
     case serverError
     case decodingError
 }
+
+enum AuthenticationError: LocalizedError {
+    case invalidCredentials
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidCredentials:
+            return "Invalid username or password"
+        }
+    }
+}

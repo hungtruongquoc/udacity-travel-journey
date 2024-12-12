@@ -13,6 +13,8 @@ struct AuthView: View {
     @State private var password: String = ""
     @State private var isLoading = false
     @State private var error: Error?
+    @State private var showAuthError = false
+    @State private var authError: AuthenticationError?
 
     @Environment(\.journalService) private var journalService
     @Environment(\.journalServiceLive) private var journalServiceLive
@@ -29,6 +31,7 @@ struct AuthView: View {
         }
         .loadingOverlay(isLoading)
         .alert(error: $error)
+        .authenticationErrorAlert(error: authError, isPresented: $showAuthError)
     }
 
     // MARK: - Views
@@ -109,6 +112,9 @@ struct AuthView: View {
         do {
             try validateForm()
             try await journalServiceLive.logIn(username: username, password: password)
+        } catch let authError as AuthenticationError {
+            self.authError = authError
+            self.showAuthError = true
         } catch {
             self.error = error
         }
@@ -120,6 +126,9 @@ struct AuthView: View {
         do {
             try validateForm()
             try await journalServiceLive.register(username: username, password: password)
+        } catch let authError as AuthenticationError {
+            self.authError = authError
+            self.showAuthError = true
         } catch {
             self.error = error
         }

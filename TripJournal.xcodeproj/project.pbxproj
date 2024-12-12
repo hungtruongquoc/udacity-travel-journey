@@ -35,6 +35,7 @@
 		19C44E6C2D0A7558008517D9 /* Exceptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C44E6B2D0A7558008517D9 /* Exceptions.swift */; };
 		19F72CEC2D0A966700C58038 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F72CEB2D0A966700C58038 /* KeychainService.swift */; };
 		19F72CEE2D0A99E000C58038 /* FeedbackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F72CED2D0A99E000C58038 /* FeedbackService.swift */; };
+		19F72CF22D0AA90500C58038 /* AuthenticationErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F72CF12D0AA90500C58038 /* AuthenticationErrorAlert.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,7 @@
 		19C44E6D2D0A77B8008517D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		19F72CEB2D0A966700C58038 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		19F72CED2D0A99E000C58038 /* FeedbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackService.swift; sourceTree = "<group>"; };
+		19F72CF12D0AA90500C58038 /* AuthenticationErrorAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationErrorAlert.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 			children = (
 				07F6695C2B589A1E002F8D18 /* AddButton.swift */,
 				075A90FC2B446AA9009A1DCB /* Utils.swift */,
+				19F72CF12D0AA90500C58038 /* AuthenticationErrorAlert.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				07BCBA872B5D656E00C6F687 /* JournalService+Mock.swift in Sources */,
 				0767E7102B573F6300993870 /* LocationSearchView.swift in Sources */,
 				19C44E6C2D0A7558008517D9 /* Exceptions.swift in Sources */,
+				19F72CF22D0AA90500C58038 /* AuthenticationErrorAlert.swift in Sources */,
 				075A90FB2B446A80009A1DCB /* EventCell.swift in Sources */,
 				07BCBA8F2B5D7EC500C6F687 /* MediaCarousel.swift in Sources */,
 				07F6695D2B589A1E002F8D18 /* AddButton.swift in Sources */,
