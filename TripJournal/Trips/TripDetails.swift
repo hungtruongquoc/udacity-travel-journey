@@ -150,7 +150,7 @@ struct TripDetails: View {
     private func deleteMedia(withId mediaId: Media.ID) async {
         isLoading = true
         do {
-            try await journalService.deleteMedia(withId: mediaId)
+            try await journalServiceLive.deleteMedia(withId: mediaId)
             await reloadTrip()
         } catch {
             self.error = error

@@ -294,7 +294,19 @@ class JournalServiceLive: JournalService {
         return try await performNetworkRequest(request: request)
     }
 
-    func deleteMedia(withId _: Media.ID) async throws {
-        fatalError("Unimplemented deleteMedia")
+    func deleteMedia(withId mediaId: Media.ID) async throws {
+        guard let url = URL(string: APIEndpoints.Media.delete(id: "\(mediaId)")) else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = try setupRequest(
+            for: url,
+            method: "DELETE",
+            requiresAuth: true
+        )
+        
+        // For DELETE requests that return no content, decode as EmptyResponse
+        let _: EmptyResponse = try await performNetworkRequest(request: request)
+        print("Media deletion completed successfully")
     }
 }
