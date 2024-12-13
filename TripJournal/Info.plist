@@ -4,5 +4,9 @@
 <dict>
 	<key>API_BASE_URL</key>
 	<string>http://localhost:8000</string>
+	<key>LSApplicationCategoryType</key>
+	<string>Personal Assistant</string>
+	<key>CFBundleDisplayName</key>
+	<string>Travel Journey</string>
 </dict>
 </plist>
