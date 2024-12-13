@@ -42,7 +42,7 @@ class FeedbackService {
     }
     
     private func playSound(named name: String) {
-        guard let url = Bundle.main.url(forResource: name, withExtension: "mp3") else { return }
+        guard let url = Bundle.main.url(forResource: name, withExtension: "aiff") else { return }
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
